@@ -46,21 +46,20 @@ def find_basin_neighbors(y_low, x_low, basin_points):
         (y_low, x_low - 1),
     ]
     neighbor_basin = [(y,x) for y, x in neighbor_points if grid_[y][x] < 9]
-    n_pts = len(basin_points)
 
     for y_new, x_new in neighbor_basin:
+        n_pts = len(basin_points)
         basin_points.add((y_new, x_new))
         if len(basin_points) > n_pts:
             find_basin_neighbors(y_new, x_new, basin_points)
 
-    return len(basin_points)
+    return n_pts
 
 
 # part2
 basin_sizes = []
 for y_low, x_low in low_points:
-    basin_points = set()
-    basin_points.add((y_low, x_low))
+    basin_points = set({(y_low, x_low)})
     basin_sizes.append(find_basin_neighbors(y_low, x_low, basin_points))
 
 basin_sizes.sort()
