@@ -1,5 +1,3 @@
-import itertools
-
 # input_ = open("day10_test").read().splitlines()
 input_ = open("day10_input").read().splitlines()
 
