@@ -2,6 +2,7 @@
 input_ = open("day10_input").read().splitlines()
 
 pair_list = [("(", ")"), ("[", "]"), ("{", "}"), ("<", ">")]
+
 chunk_dict = dict(
     zip([x for x, y in pair_list] + [y for x, y in pair_list], [1] * 4 + [-1] * 4)
 )
