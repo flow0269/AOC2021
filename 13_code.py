@@ -24,7 +24,7 @@ def flip_grid(flip_direction, flip_loc, grid_):
         grid2 = grid_[flip_loc + 1 :]
 
         grid2_T = list(zip(*grid2))
-        grid2_T_flip = [list(reversed(grid2_T[x])) for x in range(x_range)]
+        grid2_T_flip = [list(reversed(x)) for x in grid2_T]
         grid2_flip = [list(x) for x in list(zip(*grid2_T_flip))]
         return grid1, grid2_flip
     else:
@@ -49,5 +49,8 @@ for iteration, fold_ in enumerate(fold_instructs):
     if iteration == 0:
         print("part1", sum([sum(x) for x in grid_]))
 
-stop_here = 1  # answer is spelled out by final grid
+with open("grid_file.csv", "w") as file_:
+    file_.writelines("\n".join([",".join([str(x) for x in elem]) for elem in grid_]))
+
+# answer is spelled out by final grid
 
