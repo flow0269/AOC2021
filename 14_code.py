@@ -18,8 +18,8 @@ pair_counts = {"".join(x): 0 for x in l}
 for x in zip(template, template[1:]):
     pair_counts["".join(x)] += 1
 
-rule_map = {x: (x[0] + y, y + x[1]) for x, y in rules}
-rule_map_single = {x: y for x, y in rules}
+rule_map = {"".join(x): (x[0] + y, y + x[1]) for x, y in rules}
+rule_map_single = {"".join(x): y for x, y in rules}
 
 
 def iter_rules(pair_counts, l_counts):
@@ -28,9 +28,9 @@ def iter_rules(pair_counts, l_counts):
     pc_copy = copy(pair_counts)
     for pair_, count_ in pair_counts.items():
         pc_copy[pair_] -= count_
-        pc_copy[rule_map["".join(pair_)][0]] += count_
-        pc_copy[rule_map["".join(pair_)][1]] += count_
-        l_counts[rule_map_single["".join(pair_)][0]] += count_
+        pc_copy[rule_map[pair_][0]] += count_
+        pc_copy[rule_map[pair_][1]] += count_
+        l_counts[rule_map_single[pair_][0]] += count_
 
     return pc_copy, l_counts
 
