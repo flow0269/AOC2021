@@ -1,3 +1,6 @@
 .ipynb_checkpoints
 .vscode
 test.py
+.input_data
+input_data\
+input_data/
