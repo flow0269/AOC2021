@@ -5,7 +5,7 @@ from itertools import permutations
 input_ = open("day14_input").read().splitlines()
 # input_ = open("day14_test").read().splitlines()
 
-original_template = input_[0]
+template = input_[0]
 
 rules = [x.split(" -> ") for x in input_[2:]]
 
@@ -15,7 +15,7 @@ all_letters = [x[z] for z in range(2) for x, _ in rules]
 l = set(permutations(all_letters, 2))
 
 pair_counts = {"".join(x): 0 for x in l}
-for x in zip(original_template, original_template[1:]):
+for x in zip(template, template[1:]):
     pair_counts["".join(x)] += 1
 
 rule_map = {x: (x[0] + y, y + x[1]) for x, y in rules}
@@ -35,8 +35,7 @@ def iter_rules(pair_counts, l_counts):
     return pc_copy, l_counts
 
 
-template = copy(original_template)
-l_counts = Counter(original_template)
+l_counts = Counter(template)
 for x in range(40):
     pair_counts, l_counts = iter_rules(pair_counts, l_counts)
     if x == 9:
