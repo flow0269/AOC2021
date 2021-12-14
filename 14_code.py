@@ -27,11 +27,10 @@ def iter_rules(pair_counts, l_counts):
 
     pc_copy = copy(pair_counts)
     for pair_, count_ in pair_counts.items():
-        if count_ > 0:
-            pc_copy[pair_] -= count_
-            pc_copy[rule_map["".join(pair_)][0]] += count_
-            pc_copy[rule_map["".join(pair_)][1]] += count_
-            l_counts[rule_map_single["".join(pair_)][0]] += count_
+        pc_copy[pair_] -= count_
+        pc_copy[rule_map["".join(pair_)][0]] += count_
+        pc_copy[rule_map["".join(pair_)][1]] += count_
+        l_counts[rule_map_single["".join(pair_)][0]] += count_
 
     return pc_copy, l_counts
 
