@@ -1,0 +1,1 @@
+input_ = open("day15_input").read().splitlines()
