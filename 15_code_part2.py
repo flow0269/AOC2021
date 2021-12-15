@@ -4,36 +4,36 @@ input_ = open("input_data\day15_input").read().splitlines()
 # input_ = open("input_data\day15_test").read().splitlines()
 
 risk_grid = [[int(x) for x in y] for y in input_]
-grid_offsets = {}
+n_rows = len(risk_grid)
+grid_o = {}
 
-grid_offsets[0] = risk_grid
+grid_o[0] = risk_grid
 for off_ in range(1, 9):
-    grid_offsets[off_] = [[((x + off_ - 1) % 9) + 1 for x in risk_grid[y]] for y in range(len(risk_grid))]
+    grid_o[off_] = [[((x + off_ - 1) % 9) + 1 for x in y] for y in risk_grid]
 
 def grid_large_row(y):
+    global grid_o,n_rows
     return [
-        grid_offsets[y][x] + grid_offsets[y+1][x] + grid_offsets[y+2][x] + grid_offsets[y+3][x] + grid_offsets[y+4][x]
-        for x in range(len(risk_grid))
+        grid_o[y][x] + grid_o[y+1][x] + grid_o[y+2][x] + grid_o[y+3][x] + grid_o[y+4][x]
+        for x in range(n_rows)
     ]
 
-grid_ = grid_large_row(0)
-grid_.extend(grid_large_row(1))
-grid_.extend(grid_large_row(2))
-grid_.extend(grid_large_row(3))
-grid_.extend(grid_large_row(4))
+mega_grid = grid_large_row(0)
+mega_grid.extend(grid_large_row(1))
+mega_grid.extend(grid_large_row(2))
+mega_grid.extend(grid_large_row(3))
+mega_grid.extend(grid_large_row(4))
 
-x_range = len(grid_[0])
-y_range = len(grid_)
+x_range = len(mega_grid[0])
+y_range = len(mega_grid)
 
 def in_range(x,y,offset_):
     global x_range,y_range
     return (x + offset_[0] > -1) & (x + offset_[0] < x_range) & (y + offset_[1] > -1) & (y + offset_[1] < y_range)
 offsets = [(0, 1), (0, -1), (1, 0), (-1, 0)]
 
-risk_dict = {(x,y):grid_[y][x] for x in range(x_range) for y in range(y_range)}
+risk_dict = {(x,y):mega_grid[y][x] for x in range(x_range) for y in range(y_range)}
 neighbor_dict = {(x,y):[(x + offset_[0], y + offset_[1]) for offset_ in offsets if in_range(x,y,offset_)] for x in range(x_range) for y in range(y_range) }
-
-
 print(x_range, y_range)
 
 #using https://www.redblobgames.com/pathfinding/a-star/implementation.html for dijkstra_search
