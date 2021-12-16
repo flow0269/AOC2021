@@ -4,52 +4,39 @@ input_ = open("input_data\day15_input").read().splitlines()
 # input_ = open("input_data\day15_test").read().splitlines()
 
 risk_grid = [[int(x) for x in y] for y in input_]
-grid_offsets = {}
+n_rows = len(risk_grid)
+grid_o = {}
 
+grid_o[0] = risk_grid
 for off_ in range(1, 9):
-    grid_offsets[off_] = [[((x + off_ - 1) % 9) + 1 for x in risk_grid[y]] for y in range(len(risk_grid))]
+    grid_o[off_] = [[((x + off_ - 1) % 9) + 1 for x in y] for y in risk_grid]
 
+def grid_large_row(y):
+    global grid_o,n_rows
+    return [
+        grid_o[y][x] + grid_o[y+1][x] + grid_o[y+2][x] + grid_o[y+3][x] + grid_o[y+4][x]
+        for x in range(n_rows)
+    ]
 
-grid_ = [
-    risk_grid[x] + grid_offsets[1][x] + grid_offsets[2][x] + grid_offsets[3][x] + grid_offsets[4][x]
-    for x in range(len(risk_grid))
-]
-grid_row2 = [
-    grid_offsets[1][x] + grid_offsets[2][x] + grid_offsets[3][x] + grid_offsets[4][x] + grid_offsets[5][x]
-    for x in range(len(risk_grid))
-]
-grid_row3 = [
-    grid_offsets[2][x] + grid_offsets[3][x] + grid_offsets[4][x] + grid_offsets[5][x] + grid_offsets[6][x]
-    for x in range(len(risk_grid))
-]
-grid_row4 = [
-    grid_offsets[3][x] + grid_offsets[4][x] + grid_offsets[5][x] + grid_offsets[6][x] + grid_offsets[7][x]
-    for x in range(len(risk_grid))
-]
-grid_row5 = [
-    grid_offsets[4][x] + grid_offsets[5][x] + grid_offsets[6][x] + grid_offsets[7][x] + grid_offsets[8][x]
-    for x in range(len(risk_grid))
-]
+mega_grid = grid_large_row(0)
+mega_grid.extend(grid_large_row(1))
+mega_grid.extend(grid_large_row(2))
+mega_grid.extend(grid_large_row(3))
+mega_grid.extend(grid_large_row(4))
 
-grid_.extend(grid_row2)
-grid_.extend(grid_row3)
-grid_.extend(grid_row4)
-grid_.extend(grid_row5)
+x_range = len(mega_grid[0])
+y_range = len(mega_grid)
 
-x_range = len(grid_[0])
-y_range = len(grid_)
-
-risk_dict = dict()
+def in_range(x,y,offset_):
+    global x_range,y_range
+    return (x + offset_[0] > -1) & (x + offset_[0] < x_range) & (y + offset_[1] > -1) & (y + offset_[1] < y_range)
 offsets = [(0, 1), (0, -1), (1, 0), (-1, 0)]
-neighbor_dict = dict()
-for y in range(y_range):
-    for x in range(x_range):
-        risk_dict[(x, y)] = grid_[y][x]
-        neighbor_dict[(x, y)] = [(x + offset_[0], y + offset_[1]) for offset_ in offsets if (x + offset_[0] > -1) & (x + offset_[0] < x_range) & (y + offset_[1] > -1) & (y + offset_[1] < y_range)]
 
-
+risk_dict = {(x,y):mega_grid[y][x] for x in range(x_range) for y in range(y_range)}
+neighbor_dict = {(x,y):[(x + offset_[0], y + offset_[1]) for offset_ in offsets if in_range(x,y,offset_)] for x in range(x_range) for y in range(y_range) }
 print(x_range, y_range)
 
+#using https://www.redblobgames.com/pathfinding/a-star/implementation.html for dijkstra_search
 def dijkstra_search(risk_dict, target, start=(0, 0)):
     path_queue = []
     heapq.heappush(path_queue, (0, start))
@@ -74,7 +61,6 @@ def dijkstra_search(risk_dict, target, start=(0, 0)):
 
     return came_from, cost_so_far
 
-
 def print_result(previous_nodes, shortest_path, start_node, target_node):
     path = []
     node = target_node
@@ -87,12 +73,7 @@ def print_result(previous_nodes, shortest_path, start_node, target_node):
 
     return shortest_path[target_node], reversed(path)
 
-
 target_node = (x_range - 1, y_range - 1)
-
 previous_nodes, shortest_path = dijkstra_search(risk_dict, target_node)
-
 n_steps, shortest_path = print_result(previous_nodes, shortest_path, (0, 0), target_node)
-
 print("part2", n_steps)
-
